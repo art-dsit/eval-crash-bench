@@ -3,7 +3,7 @@
 from inspect_ai.tool import Tool, tool
 from inspect_ai.tool._tools._execute import code_viewer
 
-from .sandbox import exec_in_container
+from evalcrashbench.sandbox import exec_in_container
 
 
 @tool(viewer=code_viewer("bash", "cmd"))
