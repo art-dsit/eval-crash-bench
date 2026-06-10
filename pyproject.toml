@@ -14,6 +14,7 @@ dependencies = [
     "inspect_ai>=0.3.79",
     "rich>=13.9",
     "platformdirs>=4.3.7",
+    "anthropic>=0.105.2",
 ]
 
 [tool.pytest.ini_options]
