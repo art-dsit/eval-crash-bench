@@ -584,6 +584,7 @@ source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "inspect-ai" },
+    { name = "inspect-ec2-sandbox" },
     { name = "openai" },
     { name = "platformdirs" },
     { name = "pycurl" },
@@ -604,6 +605,7 @@ dev = [
 requires-dist = [
     { name = "anthropic", specifier = ">=0.105.2" },
     { name = "inspect-ai", specifier = ">=0.3.79" },
+    { name = "inspect-ec2-sandbox", git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true" },
     { name = "openai", specifier = ">=2.40.0" },
     { name = "platformdirs", specifier = ">=4.3.7" },
     { name = "pycurl", specifier = ">=7.45.0" },
@@ -974,6 +976,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/47/ee/dd3f75d12b7dc54aab1493b8f06ec35e5c03981eed0857cc44deb89b909a/inspect_ai-0.3.234.tar.gz", hash = "sha256:a5cb12b06b7ad5d1b99a304d58a8ca6e756555f4ff4aafc101594f9ea4c49f3a", size = 46963453, upload-time = "2026-06-02T19:48:21.59Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/c6/ca8ce4a3a8dedf60c63bcc4b0a561a3e874f5a271f56a7e36968e5176ffc/inspect_ai-0.3.234-py3-none-any.whl", hash = "sha256:8265e077e9b924636fcc8a2e15d059302668555c8cb8deb2a14a85ec3e279724", size = 36436637, upload-time = "2026-06-02T19:48:14.096Z" },
+]
+
+[[package]]
+name = "inspect-ec2-sandbox"
+version = "0.1.1"
+source = { git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true#7c0dcac67c6d5e74f65009f708215d1cd3bed787" }
+dependencies = [
+    { name = "boto3" },
+    { name = "httpx" },
+    { name = "inspect-ai" },
+    { name = "platformdirs" },
+    { name = "pydantic" },
+    { name = "pydantic-extra-types" },
+    { name = "pydantic-settings" },
+    { name = "rich" },
+    { name = "tenacity" },
+    { name = "websocket-client" },
 ]
 
 [[package]]
@@ -2194,6 +2213,20 @@ wheels = [
 ]
 
 [[package]]
+name = "pydantic-settings"
+version = "2.14.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/07/60/1d1e59c9c90d54591469ada7d268251f71c24bdb765f1a8a832cee8c6653/pydantic_settings-2.14.1.tar.gz", hash = "sha256:e874d3bec7e787b0c9958277956ed9b4dd5de6a80e162188fdaff7c5e26fd5fa", size = 235551, upload-time = "2026-05-08T13:40:06.542Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ae/8d/f1af3832f5e6eb13ba94ee809e72b8ecb5eef226d27ee0bef7d963d943c7/pydantic_settings-2.14.1-py3-none-any.whl", hash = "sha256:6e3c7edfd8277687cdc598f56e5cff0e9bfff0910a3749deaa8d4401c3a2b9de", size = 60964, upload-time = "2026-05-08T13:40:04.958Z" },
+]
+
+[[package]]
 name = "pygments"
 version = "2.20.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3075,6 +3108,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e6/bf/f6544ba992ddb9a6077343a576f9844f7f8f06ab819aefd00206e9255f18/uvicorn-0.48.0.tar.gz", hash = "sha256:a5504207195d08c2511bf9125ede5ac4a4b71725d519e758d01dcf0bc2d31c37", size = 91074, upload-time = "2026-05-24T12:08:41.925Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/01/be/72532be3da7acc5fdfbccdb95215cd04f995a0886532a5b423f929cda4cc/uvicorn-0.48.0-py3-none-any.whl", hash = "sha256:48097851328b87ec36117d3d575234519eb58c2b22d79666e9bbc6c49a761dad", size = 71410, upload-time = "2026-05-24T12:08:40.258Z" },
+]
+
+[[package]]
+name = "websocket-client"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/41/aa4bf9664e4cda14c3b39865b12251e8e7d239f4cd0e3cc1b6c2ccde25c1/websocket_client-1.9.0.tar.gz", hash = "sha256:9e813624b6eb619999a97dc7958469217c3176312b3a16a4bd1bc7e08a46ec98", size = 70576, upload-time = "2025-10-07T21:16:36.495Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/34/db/b10e48aa8fff7407e67470363eac595018441cf32d5e1001567a7aeba5d2/websocket_client-1.9.0-py3-none-any.whl", hash = "sha256:af248a825037ef591efbf6ed20cc5faa03d3b47b9e5a2230a529eeee1c1fc3ef", size = 82616, upload-time = "2025-10-07T21:16:34.951Z" },
 ]
 
 [[package]]
