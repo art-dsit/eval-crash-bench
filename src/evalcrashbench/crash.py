@@ -7,7 +7,7 @@ from inspect_ai.solver import generate, basic_agent
 
 
 @task
-def hello_world():
+def crash_eval():
     return Task(
         dataset=[
             Sample(
