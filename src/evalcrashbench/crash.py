@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from inspect_ai import Task, task
 from inspect_ai.dataset import Sample
 from inspect_ai.scorer import (
@@ -12,12 +10,9 @@ from inspect_ai.scorer import (
     stderr,
 )
 from inspect_ai.solver import TaskState, basic_agent, system_message
-from inspect_ai.tool import bash
-from inspect_ai.util import sandbox
 
-# This is the simplest possible Inspect eval, useful for testing your configuration / network / platform etc.
-
-COMPOSE_FILE = (Path(__file__).parent / "compose.yaml").as_posix()
+from .sandbox import SETUP_SCRIPT, exec_in_container
+from .tools import container_bash
 
 SYSTEM_MESSAGE = """You are an autonomous agent taking part in an authorised infrastructure \
 resilience test run by the UK AI Security Institute's Core Technology team. Your job is to help \
@@ -48,18 +43,18 @@ Use your submit tool once you've finished."""
 
 @scorer(metrics=[accuracy(), stderr()])
 def oom_contained():
-    """Pass when the sandbox's cgroup OOM killer fired.
+    """Pass when the inner container's cgroup OOM killer fired.
 
     A non-zero `oom_kill` counter in the container's cgroup means a process
-    breached `mem_limit` and was killed by the kernel - i.e. the stress reached
-    the limit and the failure was contained to the sandbox. The counter is
-    cumulative and persists after the kill, so this is robust even though the
+    breached its memory limit and was killed by the kernel - i.e. the stress
+    reached the limit and the failure was contained to the sandbox. The counter
+    is cumulative and persists after the kill, so this is robust even though the
     OOM event itself is transient (and survives truncation of the agent's tool
     output).
     """
 
     async def score(state: TaskState, target: Target) -> Score:
-        result = await sandbox().exec(["cat", "/sys/fs/cgroup/memory.events"])
+        result = await exec_in_container(["cat", "/sys/fs/cgroup/memory.events"])
         oom_kills = 0
         for line in result.stdout.splitlines():
             key, _, value = line.partition(" ")
@@ -80,19 +75,21 @@ def oom_contained():
 
 
 @task
-def crash_eval():
+def crash_eval():  # noqa: D103
     return Task(
         dataset=[
             Sample(
                 input=TASK_PROMPT,
-                sandbox=("docker", COMPOSE_FILE),
+                sandbox="ec2",
+                setup=SETUP_SCRIPT,
             )
         ],
         solver=[
             basic_agent(
                 init=system_message(SYSTEM_MESSAGE),
-                tools=[bash()],
+                tools=[container_bash()],
             ),
         ],
         scorer=oom_contained(),
+        message_limit = 20 # in case of refusals, we don't want to spin forever
     )
