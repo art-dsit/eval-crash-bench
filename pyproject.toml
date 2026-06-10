@@ -63,7 +63,7 @@ plugins = "pydantic.mypy"
 packages = ["proxmoxsandbox", "tests.proxmoxsandboxtest"]
 
 [tool.uv.sources]
-inspect-ec2-sandbox = { git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git", lfs = true }
+inspect-ec2-sandbox = { git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git", branch = "multi-named-sandboxes", lfs = true }
 
 [dependency-groups]
 dev = [

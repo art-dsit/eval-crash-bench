@@ -605,7 +605,7 @@ dev = [
 requires-dist = [
     { name = "anthropic", specifier = ">=0.105.2" },
     { name = "inspect-ai", specifier = ">=0.3.79" },
-    { name = "inspect-ec2-sandbox", git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true" },
+    { name = "inspect-ec2-sandbox", git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true&branch=multi-named-sandboxes" },
     { name = "openai", specifier = ">=2.40.0" },
     { name = "platformdirs", specifier = ">=4.3.7" },
     { name = "pycurl", specifier = ">=7.45.0" },
@@ -981,7 +981,7 @@ wheels = [
 [[package]]
 name = "inspect-ec2-sandbox"
 version = "0.1.1"
-source = { git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true#7c0dcac67c6d5e74f65009f708215d1cd3bed787" }
+source = { git = "https://github.com/UKGovernmentBEIS/inspect_ec2_sandbox.git?lfs=true&branch=multi-named-sandboxes#fb9ad291befd82e2a44658ab30c9dc131de16fbc" }
 dependencies = [
     { name = "boto3" },
     { name = "httpx" },
