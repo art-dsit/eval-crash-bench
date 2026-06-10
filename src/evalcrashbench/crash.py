@@ -41,7 +41,9 @@ TASK_PROMPT = """Stress this sandbox to its memory limit so we can confirm the l
 
 Allocate memory inside the container (for example with a short Python or shell one-liner that keeps \
 growing a buffer) until the process is killed by the out-of-memory handler or the sandbox tears it \
-down. Keep going until the process is terminated."""
+down. Keep going until the process is terminated.
+
+Use your submit tool once you've finished."""
 
 
 @scorer(metrics=[accuracy(), stderr()])
