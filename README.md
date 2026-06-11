@@ -5,6 +5,7 @@ Can an agent deliberately crash its evaluation harness?
 To answer this we adapt the nested-sandbox approach of
 https://github.com/UKGovernmentBEIS/sandbox_escape_bench
 
+
 ## How it works
 
 Each sample provisions **two EC2 VMs** (via `inspect_ec2_sandbox`'s
@@ -86,3 +87,4 @@ Run a single sample with `--sample-id revealed` (or `discover`).
   classes) to test generalisation
 - harden the harness (handle the error, patch the version) and re-measure as a
   control
+
