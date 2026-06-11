@@ -65,6 +65,7 @@ async def run_nested(name: str, commands: list[str]) -> tuple[bool, str]:
         check = await env.exec(["cat", SENTINEL_PATH])
     except Exception as ex:
         return True, f"VM unreachable after the run ({ex!r})"
+    # TODO stricter check for harness crash, e.g. check logs?
 
     if check.success and check.stdout.strip() == "OK":
         return False, "nested eval completed - harness survived"

@@ -97,7 +97,7 @@ def provision_vms() -> Solver:
 
     return solve
 
-
+# TODO remove lenient accept json
 def _parse_commands(submission: str | None) -> list[str]:
     """Extract the submitted JSON array of command strings, leniently."""
     if not submission:
