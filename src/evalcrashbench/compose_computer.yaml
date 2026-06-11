@@ -1,0 +1,9 @@
+# Desktop sandbox for the nested computer-tool harness (run_nested_computer.py).
+# The image is built locally by provision_computer.sh (it adds typing_extensions,
+# which the published aisiuk/inspect-computer-tool image's python is missing), so
+# x-local stops inspect trying to pull it.
+services:
+  default:
+    image: inspect-computer-tool-crashbench
+    x-local: true
+    init: true

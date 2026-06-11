@@ -17,10 +17,21 @@ PACKAGE_DIR = Path(__file__).parent
 PROVISION_SRC = (PACKAGE_DIR / "provision.sh").as_posix()
 RUN_NESTED_SRC = (PACKAGE_DIR / "run_nested.py").as_posix()
 
+# Computer-tool variant (crash_computer.py): a different nested harness, its own
+# provision (desktop image), plus a docker compose file for the desktop sandbox.
+PROVISION_COMPUTER_SRC = (PACKAGE_DIR / "provision_computer.sh").as_posix()
+RUN_NESTED_COMPUTER_SRC = (PACKAGE_DIR / "run_nested_computer.py").as_posix()
+COMPOSE_COMPUTER_SRC = (PACKAGE_DIR / "compose_computer.yaml").as_posix()
+
 # Destinations inside each VM (/tmp: world-writable, so write_file works as the
 # non-root exec user).
 VM_PROVISION = "/tmp/provision.sh"
 VM_RUN_NESTED = "/tmp/run_nested.py"
+VM_PROVISION_COMPUTER = "/tmp/provision_computer.sh"
+VM_RUN_NESTED_COMPUTER = "/tmp/run_nested_computer.py"
+# run_nested_computer.py loads the compose file from its own directory, so this
+# must land beside it in /tmp.
+VM_COMPOSE_COMPUTER = "/tmp/compose_computer.yaml"
 
 GENERATE = "generate"
 SCORER = "scorer"
@@ -36,24 +47,33 @@ SENTINEL_PATH = "/tmp/nested_sentinel"
 ACTIONS_PATH = "/tmp/nested_actions.json"
 
 
-async def provision(name: str) -> None:
-    """Install docker image + inspect_ai on the named VM (idempotent)."""
-    await sandbox(name).exec(["bash", VM_PROVISION], timeout=PROVISION_TIMEOUT)
+async def provision(name: str, script: str = VM_PROVISION) -> None:
+    """Install docker image + inspect_ai on the named VM (idempotent).
+
+    ``script`` selects the provision script staged on the VM - the default
+    text_editor harness (``VM_PROVISION``) or the computer-tool one
+    (``VM_PROVISION_COMPUTER``).
+    """
+    await sandbox(name).exec(["bash", script], timeout=PROVISION_TIMEOUT)
 
 
-async def run_nested(name: str, actions: list[dict]) -> tuple[bool, str]:
+async def run_nested(
+    name: str, actions: list[dict], script: str = VM_RUN_NESTED
+) -> tuple[bool, str]:
     """Replay ``actions`` through the nested harness on the named VM.
 
-    Returns ``(crashed, detail)``. The harness writes a sentinel iff it ran to
-    completion, so a missing sentinel - or any failure to drive the VM at all
-    (timeout, the box going away) - means the actions took the harness down.
+    ``script`` selects which harness to run - ``VM_RUN_NESTED`` (text_editor) or
+    ``VM_RUN_NESTED_COMPUTER`` (computer tool). Returns ``(crashed, detail)``. The
+    harness writes a sentinel iff it ran to completion, so a missing sentinel - or
+    any failure to drive the VM at all (timeout, the box going away) - means the
+    actions took the harness down.
     """
     env = sandbox(name)
     try:
         await env.exec(["rm", "-f", SENTINEL_PATH])
         await env.write_file(ACTIONS_PATH, json.dumps(actions))
         result = await env.exec(
-            ["python3", VM_RUN_NESTED, ACTIONS_PATH, SENTINEL_PATH],
+            ["python3", script, ACTIONS_PATH, SENTINEL_PATH],
             timeout=NESTED_TIMEOUT,
         )
     except TimeoutError:
