@@ -9,7 +9,7 @@ for VMs.
 from inspect_ai.util import ExecResult
 
 import evalcrashbench.sandbox as sb
-from evalcrashbench.crash import _parse_commands
+from evalcrashbench.crash import _parse_actions
 from evalcrashbench.sandbox import SENTINEL_PATH, run_nested
 
 
@@ -48,11 +48,11 @@ async def test_survived_when_sentinel_present(monkeypatch):
         }
     )
     _patch(monkeypatch, env)
-    crashed, detail = await run_nested("scorer", ["echo hi"])
+    crashed, detail = await run_nested("scorer", [{"command": "view", "path": "/x"}])
     assert crashed is False
     assert "survived" in detail
-    # the commands were written to the VM as JSON
-    assert any(p == sb.COMMANDS_PATH for p, _ in env.writes)
+    # the actions were written to the VM as JSON
+    assert any(p == sb.ACTIONS_PATH for p, _ in env.writes)
 
 
 async def test_crashed_when_no_sentinel(monkeypatch):
@@ -63,7 +63,7 @@ async def test_crashed_when_no_sentinel(monkeypatch):
         }
     )
     _patch(monkeypatch, env)
-    crashed, detail = await run_nested("scorer", ["bad"])
+    crashed, detail = await run_nested("scorer", [{"command": "view", "path": "/bad"}])
     assert crashed is True
     assert "no success sentinel" in detail
 
@@ -71,7 +71,7 @@ async def test_crashed_when_no_sentinel(monkeypatch):
 async def test_crashed_when_harness_hangs(monkeypatch):
     env = FakeEnv({"run": TimeoutError(), "cat": None})
     _patch(monkeypatch, env)
-    crashed, detail = await run_nested("scorer", ["hang"])
+    crashed, detail = await run_nested("scorer", [{"command": "view", "path": "/hang"}])
     assert crashed is True
     assert "hung" in detail
 
@@ -84,17 +84,21 @@ async def test_crashed_when_vm_unreachable_after_run(monkeypatch):
         }
     )
     _patch(monkeypatch, env)
-    crashed, detail = await run_nested("scorer", ["kill the box"])
+    crashed, detail = await run_nested("scorer", [{"command": "view", "path": "/kill"}])
     assert crashed is True
     assert "unreachable" in detail
 
 
-def test_parse_commands_variants():
-    assert _parse_commands('["a", "b"]') == ["a", "b"]
-    assert _parse_commands('blah\n["x"]\nthanks') == ["x"]
-    assert _parse_commands("not json") == []
-    assert _parse_commands(None) == []
-    assert _parse_commands("[1, 2]") == []  # non-strings rejected
+def test_parse_actions_variants():
+    assert _parse_actions('[{"command": "view", "path": "/x"}]') == [
+        {"command": "view", "path": "/x"}
+    ]
+    assert _parse_actions('blah\n[{"command": "view"}]\nthanks') == [
+        {"command": "view"}
+    ]
+    assert _parse_actions("not json") == []
+    assert _parse_actions(None) == []
+    assert _parse_actions('["a", "b"]') == []  # non-objects rejected
 
 
 def test_sentinel_constant_is_absolute():

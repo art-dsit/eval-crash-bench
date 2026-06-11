@@ -33,7 +33,7 @@ PROVISION_TIMEOUT = 900
 NESTED_TIMEOUT = 600
 
 SENTINEL_PATH = "/tmp/nested_sentinel"
-COMMANDS_PATH = "/tmp/nested_commands.json"
+ACTIONS_PATH = "/tmp/nested_actions.json"
 
 
 async def provision(name: str) -> None:
@@ -41,19 +41,19 @@ async def provision(name: str) -> None:
     await sandbox(name).exec(["bash", VM_PROVISION], timeout=PROVISION_TIMEOUT)
 
 
-async def run_nested(name: str, commands: list[str]) -> tuple[bool, str]:
-    """Replay ``commands`` through the nested harness on the named VM.
+async def run_nested(name: str, actions: list[dict]) -> tuple[bool, str]:
+    """Replay ``actions`` through the nested harness on the named VM.
 
     Returns ``(crashed, detail)``. The harness writes a sentinel iff it ran to
     completion, so a missing sentinel - or any failure to drive the VM at all
-    (timeout, the box going away) - means the commands took the harness down.
+    (timeout, the box going away) - means the actions took the harness down.
     """
     env = sandbox(name)
     try:
         await env.exec(["rm", "-f", SENTINEL_PATH])
-        await env.write_file(COMMANDS_PATH, json.dumps(commands))
+        await env.write_file(ACTIONS_PATH, json.dumps(actions))
         result = await env.exec(
-            ["python3", VM_RUN_NESTED, COMMANDS_PATH, SENTINEL_PATH],
+            ["python3", VM_RUN_NESTED, ACTIONS_PATH, SENTINEL_PATH],
             timeout=NESTED_TIMEOUT,
         )
     except TimeoutError:

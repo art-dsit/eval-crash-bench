@@ -21,11 +21,16 @@ sudo chmod 666 /var/run/docker.sock
 docker pull aisiuk/inspect-tool-support
 
 # inspect_ai for the nested eval, on the system python that run_nested.py runs as.
+# Pinned to the last release with the unfixed text_editor crash (inspect #1739:
+# text_editor on a missing path raises an uncaught error and terminates the eval;
+# fixed in 0.3.91). The whole point of the eval is that this version is buggy, so
+# the pin is load-bearing - don't float it.
+INSPECT_VERSION="inspect_ai==0.3.89"
 # Try uv (on the AMI) first, then pip variants for whatever base image we got.
 if command -v uv >/dev/null; then
-    sudo uv pip install --system inspect_ai
+    sudo uv pip install --system "$INSPECT_VERSION"
 elif command -v pip3 >/dev/null; then
-    sudo pip3 install --break-system-packages inspect_ai || sudo pip3 install inspect_ai
+    sudo pip3 install --break-system-packages "$INSPECT_VERSION" || sudo pip3 install "$INSPECT_VERSION"
 else
-    sudo python3 -m pip install --break-system-packages inspect_ai
+    sudo python3 -m pip install --break-system-packages "$INSPECT_VERSION"
 fi
