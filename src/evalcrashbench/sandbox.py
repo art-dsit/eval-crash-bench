@@ -23,12 +23,19 @@ PROVISION_COMPUTER_SRC = (PACKAGE_DIR / "provision_computer.sh").as_posix()
 RUN_NESTED_COMPUTER_SRC = (PACKAGE_DIR / "run_nested_computer.py").as_posix()
 COMPOSE_COMPUTER_SRC = (PACKAGE_DIR / "compose_computer.yaml").as_posix()
 
+# Null-byte variant (crash_null_byte.py): a bash-tool harness over the default
+# docker sandbox, pinned to a version with the unfixed embedded-null-byte crash.
+PROVISION_NULL_BYTE_SRC = (PACKAGE_DIR / "provision_null_byte.sh").as_posix()
+RUN_NESTED_NULL_BYTE_SRC = (PACKAGE_DIR / "run_nested_null_byte.py").as_posix()
+
 # Destinations inside each VM (/tmp: world-writable, so write_file works as the
 # non-root exec user).
 VM_PROVISION = "/tmp/provision.sh"
 VM_RUN_NESTED = "/tmp/run_nested.py"
 VM_PROVISION_COMPUTER = "/tmp/provision_computer.sh"
 VM_RUN_NESTED_COMPUTER = "/tmp/run_nested_computer.py"
+VM_PROVISION_NULL_BYTE = "/tmp/provision_null_byte.sh"
+VM_RUN_NESTED_NULL_BYTE = "/tmp/run_nested_null_byte.py"
 # run_nested_computer.py loads the compose file from its own directory, so this
 # must land beside it in /tmp.
 VM_COMPOSE_COMPUTER = "/tmp/compose_computer.yaml"
